@@ -4,9 +4,9 @@
 
 USING_NS_CC;
 
-Scene* MENU::createScene()
+Scene* Menu::createScene()
 {
-    return MENU::create();
+    return Menu::create();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -17,7 +17,7 @@ static void problemLoading(const char* filename)
 }
 
 // on "init" you need to initialize your instance
-bool MENU::init()
+bool Menu::init()
 {
     //////////////////////////////
     // 1. super init first
@@ -45,17 +45,17 @@ bool MENU::init()
 	auto NEWGAME_button = MenuItemSprite::create(
 		NEWGAME_button1,
 		NEWGAME_button2,
-		CC_CALLBACK_1(MENU::menuCloseCallback, this));
+		CC_CALLBACK_1(Menu::menuCloseCallback, this));
 
 	auto MULTIPLAYERGAME_button = MenuItemSprite::create(
 		MULTIPLAYERGAME_button1,
 		MULTIPLAYERGAME_button2,
-		CC_CALLBACK_1(MENU::menuCloseCallback, this));
+		CC_CALLBACK_1(Menu::menuCloseCallback, this));
 
 	auto QUIT_button = MenuItemSprite::create(
 		QUIT_button1,
 		QUIT_button2,
-		CC_CALLBACK_1(MENU::menuCloseCallback, this));
+		CC_CALLBACK_1(Menu::menuCloseCallback, this));
 
 
  /*   if (QUIT_button == nullptr ||
@@ -124,7 +124,7 @@ bool MENU::init()
 
 
 
-void MENU::menuCloseCallback(Ref* pSender)
+void Menu::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();

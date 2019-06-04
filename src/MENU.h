@@ -4,7 +4,7 @@
 
 #include "cocos2d.h"
 
-class MENU : public cocos2d::Scene
+class Menu : public cocos2d::Scene
 {
 public:
     static cocos2d::Scene* createScene();
@@ -15,7 +15,7 @@ public:
     void menuCloseCallback(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually
-    CREATE_FUNC(MENU);
+    CREATE_FUNC(Menu);
 };
 
 #endif // __HELLOWORLD_SCENE_H__
