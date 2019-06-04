@@ -1,12 +1,12 @@
 
-#include "MENU.h"
+#include "MenuScene.h"
 #include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 
-Scene* Menu::createScene()
+Scene* MenuScene::createScene()
 {
-    return Menu::create();
+    return MenuScene::create();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -17,7 +17,7 @@ static void problemLoading(const char* filename)
 }
 
 // on "init" you need to initialize your instance
-bool Menu::init()
+bool MenuScene::init()
 {
     //////////////////////////////
     // 1. super init first
@@ -45,17 +45,17 @@ bool Menu::init()
 	auto NEWGAME_button = MenuItemSprite::create(
 		NEWGAME_button1,
 		NEWGAME_button2,
-		CC_CALLBACK_1(Menu::menuCloseCallback, this));
+		CC_CALLBACK_1(MenuScene::menuCloseCallback, this));  //½Ó¿Ú
 
 	auto MULTIPLAYERGAME_button = MenuItemSprite::create(
 		MULTIPLAYERGAME_button1,
 		MULTIPLAYERGAME_button2,
-		CC_CALLBACK_1(Menu::menuCloseCallback, this));
+		CC_CALLBACK_1(MenuScene::menuCloseCallback, this));
 
 	auto QUIT_button = MenuItemSprite::create(
 		QUIT_button1,
 		QUIT_button2,
-		CC_CALLBACK_1(Menu::menuCloseCallback, this));
+		CC_CALLBACK_1(MenuScene::menuCloseCallback, this));
 
 
  /*   if (QUIT_button == nullptr ||
@@ -124,7 +124,7 @@ bool Menu::init()
 
 
 
-void Menu::menuCloseCallback(Ref* pSender)
+void MenuScene::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();
