@@ -1,6 +1,6 @@
 
-#ifndef __HELLOWORLD_SCENE_H__
-#define __HELLOWORLD_SCENE_H__
+#ifndef __SELECTING_SCENE_H__
+#define __SELECTING_SCENE_H__
 
 #include "cocos2d.h"
 
@@ -16,6 +16,10 @@ public:
     
     // implement the "static create()" method manually
     CREATE_FUNC(SelectingScene);
+
+	// ÇÐ»»scene
+	void changescene_to_play(Ref* sender);
+
 };
 
-#endif // __HELLOWORLD_SCENE_H__
+#endif // __SELECTING_SCENE_H__

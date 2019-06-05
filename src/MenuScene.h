@@ -16,6 +16,10 @@ public:
     
     // implement the "static create()" method manually
     CREATE_FUNC(MenuScene);
+
+	// ÇÐ»»scene
+	void changescene_to_select(Ref* sender);
+
 };
 
 #endif // __HELLOWORLD_SCENE_H__

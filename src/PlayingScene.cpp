@@ -35,7 +35,7 @@ bool PlayingScene::init()
 
     // add a "close" icon to exit the progress. it's an autorelease object
 
-	auto NEWGAME_button1 = Sprite::create("NEWGAME_button1.png");
+	/*auto NEWGAME_button1 = Sprite::create("NEWGAME_button1.png");
 	auto NEWGAME_button2 = Sprite::create("NEWGAME_button2.png");
 	auto MULTIPLAYERGAME_button1 = Sprite::create("MULTIPLAYERGAME_button1.png");
 	auto MULTIPLAYERGAME_button2 = Sprite::create("MULTIPLAYERGAME_button2.png");
@@ -70,13 +70,13 @@ bool PlayingScene::init()
         float y = origin.y + QUIT_button->getContentSize().height/2;
 		QUIT_button->setPosition(Vec2(x,y));
     }
-*/
+
 	auto menu = Menu::create(NEWGAME_button, MULTIPLAYERGAME_button, QUIT_button, NULL);
 	menu->alignItemsVertically();
 	menu->setAnchorPoint(Point(0.5, 0.5));
 	menu->setPosition(Vec2(visibleSize.width / 4 + origin.x, visibleSize.height / 2 + origin.y));
     this->addChild(menu, 1);
-
+	*/
 
     auto title1 = Label::createWithTTF("Honor of", "fonts/Marker Felt.ttf", 35);
     if (title1 == nullptr)

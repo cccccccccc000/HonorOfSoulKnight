@@ -2,6 +2,8 @@
 #include "SelectingScene.h"
 #include "SimpleAudioEngine.h"
 
+#include "PlayingScene.h"
+
 USING_NS_CC;
 
 Scene* SelectingScene::createScene()
@@ -14,6 +16,11 @@ static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
+}
+
+// 切换 Scene to PlayingScene
+void SelectingScene::changescene_to_play(Ref* sender) {
+	Director::getInstance()->replaceScene(PlayingScene::createScene());
 }
 
 // on "init" you need to initialize your instance
@@ -35,27 +42,27 @@ bool SelectingScene::init()
 
     // add a "close" icon to exit the progress. it's an autorelease object
 
-	auto NEWGAME_button1 = Sprite::create("NEWGAME_button1.png");
-	auto NEWGAME_button2 = Sprite::create("NEWGAME_button2.png");
-	auto MULTIPLAYERGAME_button1 = Sprite::create("MULTIPLAYERGAME_button1.png");
-	auto MULTIPLAYERGAME_button2 = Sprite::create("MULTIPLAYERGAME_button2.png");
-	auto QUIT_button1 = Sprite::create("QUIT_button1.png");
-	auto QUIT_button2 = Sprite::create("QUIT_button2.png");
+	auto SHOOTER_button1 = Sprite::create("NEWGAME_button1.png");
+	auto SHOOTER_button2 = Sprite::create("NEWGAME_button2.png");
+	auto WARRIOR_button1 = Sprite::create("MULTIPLAYERGAME_button1.png");
+	auto WARRIOR_button2 = Sprite::create("MULTIPLAYERGAME_button2.png");
+	auto MAGE_button1 = Sprite::create("QUIT_button1.png");
+	auto MAGE_button2 = Sprite::create("QUIT_button2.png");
 
-	auto NEWGAME_button = MenuItemSprite::create(
-		NEWGAME_button1,
-		NEWGAME_button2,
-		CC_CALLBACK_1(SelectingScene::menuCloseCallback, this));
+	auto SHOOTER_button = MenuItemSprite::create(
+		SHOOTER_button1,
+		SHOOTER_button2,
+		CC_CALLBACK_1(SelectingScene::changescene_to_play, this));   // 接口 to playingscene // 射手 SHOOTER
 
-	auto MULTIPLAYERGAME_button = MenuItemSprite::create(
-		MULTIPLAYERGAME_button1,
-		MULTIPLAYERGAME_button2,
-		CC_CALLBACK_1(SelectingScene::menuCloseCallback, this));
+	auto WARRIOR_button = MenuItemSprite::create(
+		WARRIOR_button1,
+		WARRIOR_button2,
+		CC_CALLBACK_1(SelectingScene::changescene_to_play, this));   // 战士 WARRIOR
 
-	auto QUIT_button = MenuItemSprite::create(
-		QUIT_button1,
-		QUIT_button2,
-		CC_CALLBACK_1(SelectingScene::menuCloseCallback, this));
+	auto MAGE_button = MenuItemSprite::create(
+		MAGE_button1,
+		MAGE_button2,
+		CC_CALLBACK_1(SelectingScene::changescene_to_play, this));   // 法师 MAGE
 
 
  /*   if (QUIT_button == nullptr ||
@@ -71,7 +78,7 @@ bool SelectingScene::init()
 		QUIT_button->setPosition(Vec2(x,y));
     }
 */
-	auto menu = Menu::create(NEWGAME_button, MULTIPLAYERGAME_button, QUIT_button, NULL);
+	auto menu = Menu::create(SHOOTER_button, WARRIOR_button, MAGE_button, NULL);
 	menu->alignItemsVertically();
 	menu->setAnchorPoint(Point(0.5, 0.5));
 	menu->setPosition(Vec2(visibleSize.width / 4 + origin.x, visibleSize.height / 2 + origin.y));

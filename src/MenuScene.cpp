@@ -2,6 +2,8 @@
 #include "MenuScene.h"
 #include "SimpleAudioEngine.h"
 
+#include "SelectingScene.h"
+
 USING_NS_CC;
 
 Scene* MenuScene::createScene()
@@ -15,6 +17,12 @@ static void problemLoading(const char* filename)
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
+
+// 切换scene
+void MenuScene::changescene_to_select(Ref* sender) {
+	Director::getInstance()->replaceScene(SelectingScene::createScene());
+}
+
 
 // on "init" you need to initialize your instance
 bool MenuScene::init()
@@ -45,12 +53,12 @@ bool MenuScene::init()
 	auto NEWGAME_button = MenuItemSprite::create(
 		NEWGAME_button1,
 		NEWGAME_button2,
-		CC_CALLBACK_1(MenuScene::menuCloseCallback, this));  //接口
+		CC_CALLBACK_1(MenuScene::changescene_to_select, this));  // 接口 to SelectingScene
 
 	auto MULTIPLAYERGAME_button = MenuItemSprite::create(
 		MULTIPLAYERGAME_button1,
 		MULTIPLAYERGAME_button2,
-		CC_CALLBACK_1(MenuScene::menuCloseCallback, this));
+		CC_CALLBACK_1(MenuScene::changescene_to_select, this));  // 接口 to SelectingScene
 
 	auto QUIT_button = MenuItemSprite::create(
 		QUIT_button1,
