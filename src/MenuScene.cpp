@@ -24,11 +24,9 @@ void MenuScene::changescene_to_select(Ref* sender) {
 }
 
 
-// on "init" you need to initialize your instance
 bool MenuScene::init()
 {
-    //////////////////////////////
-    // 1. super init first
+
     if ( !Scene::init() )
     {
         return false;
@@ -37,11 +35,7 @@ bool MenuScene::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
 
-    // add a "close" icon to exit the progress. it's an autorelease object
 
 	auto NEWGAME_button1 = Sprite::create("NEWGAME_button1.png");
 	auto NEWGAME_button2 = Sprite::create("NEWGAME_button2.png");

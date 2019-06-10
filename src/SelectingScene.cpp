@@ -11,7 +11,7 @@ Scene* SelectingScene::createScene()
     return SelectingScene::create();
 }
 
-// Print useful error message instead of segfaulting when files are not there.
+
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
@@ -20,14 +20,98 @@ static void problemLoading(const char* filename)
 
 // 切换 Scene to PlayingScene
 void SelectingScene::changescene_to_play(Ref* sender) {
+
 	Director::getInstance()->replaceScene(PlayingScene::createScene());
 }
 
-// on "init" you need to initialize your instance
+/*
+void SelectingScene::onMouseUp(Event* event)
+{
+	EventMouse* e = (EventMouse*)event;
+
+
+
+	auto moveBy = MoveBy::create(2, Vec2(0, -50));
+	SABER_button1->runAction(moveBy);
+}
+*/
+/*
+bool saber_selected = true;
+bool archer_selected = true;
+bool caster_selected = true;
+
+
+void SelectingScene::saberMove(Object* pSender)
+{
+	if (archer_selected == false)
+	{
+		auto moveBy = MoveBy::create(0, Vec2(0, 50));
+		archer->runAction(moveBy);
+		archer_selected == true;
+	}
+	if (caster_selected == false)
+	{
+		auto moveBy = MoveBy::create(0, Vec2(0, 50));
+		caster->runAction(moveBy);
+		caster_selected == true;
+	}
+	if (saber_selected == true)
+	{
+		auto moveBy = MoveBy::create(1, Vec2(0, -50));
+		saber->runAction(moveBy);
+		saber_selected == false;
+	}
+	
+}
+
+void SelectingScene::archerMove(Object* pSender)
+{
+	if (saber_selected == false)
+	{
+		auto moveBy = MoveBy::create(0, Vec2(0, 50));
+		saber->runAction(moveBy);
+		saber_selected == true;
+	}
+	if (caster_selected == false)
+	{
+		auto moveBy = MoveBy::create(0, Vec2(0, 50));
+		caster->runAction(moveBy);
+		caster_selected == true;
+	}
+	if (archer_selected == true)
+	{
+		auto moveBy = MoveBy::create(1, Vec2(0, -50));
+		archer->runAction(moveBy);
+		archer_selected == false;
+	}
+}
+
+void SelectingScene::casterMove(Object* pSender)
+{
+	if (archer_selected == false)
+	{
+		auto moveBy = MoveBy::create(0, Vec2(0, 50));
+		archer->runAction(moveBy);
+		archer_selected == true;
+	}
+	if (saber_selected == false)
+	{
+		auto moveBy = MoveBy::create(0, Vec2(0, 50));
+		saber->runAction(moveBy);
+		saber_selected == true;
+	}
+	if (caster_selected == true)
+	{
+		auto moveBy = MoveBy::create(1, Vec2(0, -50));
+		caster->runAction(moveBy);
+		caster_selected == false;
+	}
+}
+*/
+
 bool SelectingScene::init()
 {
-    //////////////////////////////
-    // 1. super init first
+
     if ( !Scene::init() )
     {
         return false;
@@ -36,96 +120,116 @@ bool SelectingScene::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
 
-    // add a "close" icon to exit the progress. it's an autorelease object
+	auto selecting_sofa = Sprite::create("selecting_sofa.png");
+	if (selecting_sofa == nullptr)
+	{
+		problemLoading("'selecting_sofa.jpg'");
+	}
+	else
+	{
+		selecting_sofa->setScale((visibleSize.width / selecting_sofa->getContentSize().width) / 2);
+		selecting_sofa->setAnchorPoint(Point(0.5, 0.5));
+		selecting_sofa->setPosition(Vec2(origin.x + (visibleSize.width / 2),
+			origin.y + visibleSize.height / 2));
+		this->addChild(selecting_sofa, 2);
+	}
 
-	auto SHOOTER_button1 = Sprite::create("NEWGAME_button1.png");
-	auto SHOOTER_button2 = Sprite::create("NEWGAME_button2.png");
-	auto WARRIOR_button1 = Sprite::create("MULTIPLAYERGAME_button1.png");
-	auto WARRIOR_button2 = Sprite::create("MULTIPLAYERGAME_button2.png");
-	auto MAGE_button1 = Sprite::create("QUIT_button1.png");
-	auto MAGE_button2 = Sprite::create("QUIT_button2.png");
-
-	auto SHOOTER_button = MenuItemSprite::create(
-		SHOOTER_button1,
-		SHOOTER_button2,
-		CC_CALLBACK_1(SelectingScene::changescene_to_play, this));   // 接口 to playingscene // 射手 SHOOTER
-
-	auto WARRIOR_button = MenuItemSprite::create(
-		WARRIOR_button1,
-		WARRIOR_button2,
-		CC_CALLBACK_1(SelectingScene::changescene_to_play, this));   // 战士 WARRIOR
-
-	auto MAGE_button = MenuItemSprite::create(
-		MAGE_button1,
-		MAGE_button2,
-		CC_CALLBACK_1(SelectingScene::changescene_to_play, this));   // 法师 MAGE
-
-
- /*   if (QUIT_button == nullptr ||
-		QUIT_button->getContentSize().width <= 0 ||
-		QUIT_button->getContentSize().height <= 0)
-    {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-    }
-    else
-    {
-        float x = origin.x + visibleSize.width - QUIT_button->getContentSize().width/2;
-        float y = origin.y + QUIT_button->getContentSize().height/2;
-		QUIT_button->setPosition(Vec2(x,y));
-    }
-*/
-	auto menu = Menu::create(SHOOTER_button, WARRIOR_button, MAGE_button, NULL);
-	menu->alignItemsVertically();
-	menu->setAnchorPoint(Point(0.5, 0.5));
-	menu->setPosition(Vec2(visibleSize.width / 4 + origin.x, visibleSize.height / 2 + origin.y));
-    this->addChild(menu, 1);
+	auto floor = Sprite::create("floor.png");
+	if (selecting_sofa == nullptr)
+	{
+		problemLoading("'floor.jpg'");
+	}
+	else
+	{
+		floor->setAnchorPoint(Point(0.5, 0.5));
+		floor->setPosition(Vec2(origin.x + (visibleSize.width / 2),	origin.y + visibleSize.height / 2 - 100));
+		this->addChild(floor, 1);
+	}
 
 
-    auto title1 = Label::createWithTTF("Honor of", "fonts/Marker Felt.ttf", 35);
-    if (title1 == nullptr)
+	auto saber = Sprite::create("saber.png");
+	auto archer = Sprite::create("archer.png");
+	auto caster = Sprite::create("caster.png");
+	
+	
+	saber->setScale(0.3);
+	archer->setScale(0.3);
+	caster->setScale(0.3);
+
+	saber->setPosition(Vec2(visibleSize.width / 2 + origin.x-130, visibleSize.height / 2 + origin.y-15));
+	archer->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y-15));
+	caster->setPosition(Vec2(visibleSize.width / 2 + origin.x+130, visibleSize.height / 2 + origin.y-15));
+
+	this->addChild(saber,3);
+	this->addChild(archer, 3);
+	this->addChild(caster, 3);
+
+/*	auto selecting_Listener = EventListenerMouse::create();
+	selecting_Listener->onMouseUp = CC_CALLBACK_1(SelectingScene::onMouseUp, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(selecting_Listener, this);
+	*/
+
+	auto SABER_button1 = Sprite::create("SABER_button1.png");
+	auto SABER_button2 = Sprite::create("SABER_button2.png");
+	auto ARCHER_button1 = Sprite::create("ARCHER_button1.png");
+	auto ARCHER_button2 = Sprite::create("ARCHER_button2.png");
+    auto CASTER_button1 = Sprite::create("CASTER_button1.png");
+	auto CASTER_button2 = Sprite::create("CASTER_button2.png");
+
+	SABER_button1->setScale(0.5);
+	ARCHER_button1->setScale(0.5);
+	CASTER_button1->setScale(0.5);
+	SABER_button2->setScale(0.5);
+	ARCHER_button2->setScale(0.5);
+	CASTER_button2->setScale(0.5);
+
+	SABER_button1->setAnchorPoint(Point(0.5, 0.5));
+	ARCHER_button1->setAnchorPoint(Point(0.5, 0.5));
+	CASTER_button1->setAnchorPoint(Point(0.5, 0.5));
+	SABER_button2->setAnchorPoint(Point(0.5, 0.5));
+	ARCHER_button2->setAnchorPoint(Point(0.5, 0.5));
+	CASTER_button2->setAnchorPoint(Point(0.5, 0.5));
+
+
+	auto SABER_button = MenuItemSprite::create(
+		SABER_button1,
+		SABER_button2,
+		CC_CALLBACK_1(SelectingScene::changescene_to_play, this));
+
+	auto ARCHER_button = MenuItemSprite::create(
+		ARCHER_button1,
+		ARCHER_button2,
+		CC_CALLBACK_1(SelectingScene::changescene_to_play, this));
+
+	auto CASTER_button = MenuItemSprite::create(
+		CASTER_button1,
+		CASTER_button2,
+		CC_CALLBACK_1(SelectingScene::changescene_to_play, this));
+
+
+	auto select_menu = Menu::create(SABER_button, ARCHER_button, CASTER_button, NULL);
+	select_menu->alignItemsHorizontally();
+//	float padding = 50.0;
+//	void alignItemsHorizontallyToCenterWithPadding(float padding);
+	select_menu->setPosition(Vec2(visibleSize.width / 2 + origin.x + 70, visibleSize.height / 2 + origin.y + 170));
+    this->addChild(select_menu, 2);
+
+
+    auto select_title = Label::createWithTTF("Select Your Servant", "fonts/Marker Felt.ttf", 35);
+    if (select_title == nullptr)
     {
         problemLoading("'fonts/Marker Felt.ttf'");
     }
     else
     {
-		title1->setAnchorPoint(Point(1, 1));
-		title1->setScale((visibleSize.width / title1->getContentSize().width) / 4);
-		title1->setPosition(Vec2(origin.x + (visibleSize.width / 2),
-			origin.y + visibleSize.height - title1->getContentSize().height));
-        this->addChild(title1, 2);
+		select_title->setAnchorPoint(Point(0.5, 0.5));
+		select_title->setScale((visibleSize.width / select_title->getContentSize().width) / 2);
+		select_title->setPosition(Vec2(origin.x + (visibleSize.width / 2),
+			origin.y + visibleSize.height - select_title->getContentSize().height- select_title->getContentSize().height));
+        this->addChild(select_title, 1);
     }
 
-
-	auto title2 = Sprite::create("title2.jpg");
-	if (title2 == nullptr)
-	{
-		problemLoading("'title2.jpg'");
-	}
-	else
-	{
-		title2->setScale((visibleSize.width / title2->getContentSize().width) / 3 * 1.3);
-		title2->setAnchorPoint(Point(0.3, 0.5));
-		title2->setPosition(Vec2(origin.x + (visibleSize.width / 2),
-			origin.y + visibleSize.height - title2->getContentSize().height));
-		this->addChild(title2, 1);
-	}
-
-	auto menu_pic = Sprite::create("timg.jpg");
-	if (menu_pic == nullptr)
-	{
-		problemLoading("'timg.jpg'");
-	}
-	else
-	{
-		menu_pic->setScale((visibleSize.width / menu_pic->getContentSize().width) / 2);
-		menu_pic->setAnchorPoint(Point(1, 0));
-		menu_pic->setPosition(Vec2(visibleSize.width + origin.x, 0));
-		this->addChild(menu_pic, 0);
-	}
 	return true;
 }
 
