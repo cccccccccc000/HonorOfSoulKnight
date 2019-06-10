@@ -1,10 +1,10 @@
 
-#ifndef __HELLOWORLD_SCENE_H__
-#define __HELLOWORLD_SCENE_H__
+#ifndef __PLAY_SCENE_H__
+#define __PLAY_SCENE_H__
 
 #include "cocos2d.h"
 
-class Menu : public cocos2d::Scene
+class PlayingScene : public cocos2d::Scene
 {
 public:
     static cocos2d::Scene* createScene();
@@ -15,7 +15,7 @@ public:
     void menuCloseCallback(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually
-    CREATE_FUNC(Menu);
+    CREATE_FUNC(PlayingScene);
 };
 
-#endif // __HELLOWORLD_SCENE_H__
+#endif // __PLAY_SCENE_H__
