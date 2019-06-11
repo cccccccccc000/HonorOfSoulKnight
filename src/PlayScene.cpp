@@ -1,14 +1,14 @@
-#include "PlayingScene.h"
+#include "PlayScene.h"
 #include "cocos2d.h"
 
 
-Scene* PlayingScene::createScene()
+Scene* PlayScene::createScene()
 {
     // 'scene' is an autorelease object
     auto scene = Scene::create();
     
     // 'layer' is an autorelease object
-    auto layer = PlayingScene::create();
+    auto layer = PlayScene::create();
 
     // add layer as a child to scene
     scene->addChild(layer);
@@ -18,7 +18,7 @@ Scene* PlayingScene::createScene()
 }
 
 // on "init" you need to initialize your instance
-bool PlayingScene::init()
+bool PlayScene::init()
 {
 	//////////////////////////////
 	// 1. super init first
