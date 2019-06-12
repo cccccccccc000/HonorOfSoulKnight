@@ -58,8 +58,8 @@ bool PlayScene::init()
 		auto target = static_cast<Sprite*>(event->getCurrentTarget());
 		//显示当前精灵的坐标位置
 		log("x = %f, y = %f", touch->getLocation().x, touch->getLocation().y);
-		auto mymove = MoveTo::create(5,Point(touch->getLocation().x, touch->getLocation().y));
-		target->runAction(mymove);
+		auto mymove = MoveTo::create(10,Point(touch->getLocation().x, touch->getLocation().y));//第一个参数是移动的时间
+		target->runAction(mymove);//存在一个问题是，有时候会移动到别的地方
 	};
 	listener->onTouchEnded = [=](Touch* touch, Event* event) {
 		auto target = static_cast<Sprite*>(event->getCurrentTarget());
