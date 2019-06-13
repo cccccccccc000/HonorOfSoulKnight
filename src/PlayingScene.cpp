@@ -101,13 +101,7 @@ bool PlayingScene::init()
 
 
 	int x = playerShowUpPoint["x"].asInt();
-	int y = playerShowUpPoint["y"].asInt();
-
-	/*saber = Sprite::create("saber.png");
-	saber->setPosition(x + tiled_map_1v1->getTileSize().width / 2, y + tiled_map_1v1->getTileSize().height / 2);
-	saber->setScale(0.1);
-    addChild(saber);
-	setViewPointCenter(saber->getPosition());*/
+	int y = playerShowUpPoint["y"].asInt()；
 
 
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/role.plist", "images/role.png");
