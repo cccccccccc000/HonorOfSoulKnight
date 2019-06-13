@@ -1,7 +1,6 @@
 
 #include "PlayingScene.h"
 #include "SimpleAudioEngine.h"
-
 USING_NS_CC;
 
 Scene* PlayingScene::createScene()
@@ -9,13 +8,70 @@ Scene* PlayingScene::createScene()
     return PlayingScene::create();
 }
 
-// Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
+
+void PlayingScene::setViewPointCenter(Point position) {
+	auto winSize = Director::getInstance()->getWinSize();
+
+
+	int x = MAX(position.x, winSize.width / 2);
+	int y = MAX(position.y, winSize.height / 2);
+	x = MIN(x, (tiled_map_1v1->getMapSize().width * this->tiled_map_1v1->getTileSize().width) - winSize.width / 2);
+	y = MIN(y, (tiled_map_1v1->getMapSize().height * tiled_map_1v1->getTileSize().height) - winSize.height / 2);
+	auto actualPosition = Point(x, y);
+
+
+	auto centerOfView = Point(winSize.width / 2, winSize.height / 2);
+	auto viewPoint = centerOfView - actualPosition;
+	this->setPosition(viewPoint);
+}
+void PlayingScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode code, Event* unused_event)
+{
+	auto playerPos = _hero->getPosition();
+	if (code == EventKeyboard::KeyCode::KEY_RIGHT_ARROW || code == EventKeyboard::KeyCode::KEY_LEFT_ARROW) {
+		if (code == EventKeyboard::KeyCode::KEY_RIGHT_ARROW) {
+			playerPos.x += tiled_map_1v1->getTileSize().width / 2;
+			_hero->setFlipX(false);
+		}
+		else {
+			playerPos.x -= tiled_map_1v1->getTileSize().width / 2;
+			_hero->setFlippedX(true);
+		}
+	}
+	else {
+		if (code == EventKeyboard::KeyCode::KEY_UP_ARROW) {
+			playerPos.y += tiled_map_1v1->getTileSize().height / 2;
+		}
+		else {
+			playerPos.y -= tiled_map_1v1->getTileSize().height / 2;
+		}
+	}
+
+	if (playerPos.x <= (tiled_map_1v1->getMapSize().width * tiled_map_1v1->getMapSize().width) &&
+		playerPos.y <= (tiled_map_1v1->getMapSize().height * tiled_map_1v1->getMapSize().height) &&
+		playerPos.y >= 0 &&
+		playerPos.x >= 0)
+	{
+		this->setPlayerPosition(playerPos);
+	}
+
+	this->setViewPointCenter(_hero->getPosition());
+
+}
+
+
+void PlayingScene::setPlayerPosition(Point position)
+{
+	_hero->setPosition(position);
+}
+
+bool PlayingScene::init()
+{
 // on "init" you need to initialize your instance
 bool PlayingScene::init()
 {
@@ -29,110 +85,120 @@ bool PlayingScene::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-
-	/*auto NEWGAME_button1 = Sprite::create("NEWGAME_button1.png");
-	auto NEWGAME_button2 = Sprite::create("NEWGAME_button2.png");
-	auto MULTIPLAYERGAME_button1 = Sprite::create("MULTIPLAYERGAME_button1.png");
-	auto MULTIPLAYERGAME_button2 = Sprite::create("MULTIPLAYERGAME_button2.png");
-	auto QUIT_button1 = Sprite::create("QUIT_button1.png");
-	auto QUIT_button2 = Sprite::create("QUIT_button2.png");
-
-	auto NEWGAME_button = MenuItemSprite::create(
-		NEWGAME_button1,
-		NEWGAME_button2,
-		CC_CALLBACK_1(PlayingScene::menuCloseCallback, this));
-
-	auto MULTIPLAYERGAME_button = MenuItemSprite::create(
-		MULTIPLAYERGAME_button1,
-		MULTIPLAYERGAME_button2,
-		CC_CALLBACK_1(PlayingScene::menuCloseCallback, this));
-
-	auto QUIT_button = MenuItemSprite::create(
-		QUIT_button1,
-		QUIT_button2,
-		CC_CALLBACK_1(PlayingScene::menuCloseCallback, this));
+	std::string file = "tiled_map_1v1.tmx";
+	auto str = String::createWithContentsOfFile(FileUtils::getInstance()->fullPathForFilename(file.c_str()).c_str());
+	tiled_map_1v1 = TMXTiledMap::createWithXML(str->getCString(), "");
+	ground = tiled_map_1v1->layerNamed("ground");
 
 
- /*   if (QUIT_button == nullptr ||
-		QUIT_button->getContentSize().width <= 0 ||
-		QUIT_button->getContentSize().height <= 0)
-    {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-    }
-    else
-    {
-        float x = origin.x + visibleSize.width - QUIT_button->getContentSize().width/2;
-        float y = origin.y + QUIT_button->getContentSize().height/2;
-		QUIT_button->setPosition(Vec2(x,y));
-    }
+	addChild(tiled_map_1v1, -1);
+	auto map = TMXTiledMap::create("tiled_map_1v1.tmx");
+	addChild(map, 0);
+	auto layer1 = map->getLayer("ground");
+	auto layer2 = map->getLayer("pic1");
+	auto layer3 = map->getLayer("pic2");
 
-	auto menu = Menu::create(NEWGAME_button, MULTIPLAYERGAME_button, QUIT_button, NULL);
-	menu->alignItemsVertically();
-	menu->setAnchorPoint(Point(0.5, 0.5));
-	menu->setPosition(Vec2(visibleSize.width / 4 + origin.x, visibleSize.height / 2 + origin.y));
-    this->addChild(menu, 1);
-	*/
+	TMXObjectGroup* objects = tiled_map_1v1->getObjectGroup("hero");
+//	CCASSERT(NULL != objects, "'hero' object group not found");
 
-    auto title1 = Label::createWithTTF("Honor of", "fonts/Marker Felt.ttf", 35);
-    if (title1 == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-		title1->setAnchorPoint(Point(1, 1));
-		title1->setScale((visibleSize.width / title1->getContentSize().width) / 4);
-		title1->setPosition(Vec2(origin.x + (visibleSize.width / 2),
-			origin.y + visibleSize.height - title1->getContentSize().height));
-        this->addChild(title1, 2);
-    }
+	auto playerShowUpPoint = objects->getObject("_hero");
+	//CCASSERT(!playerShowUpPoint.empty(), "_hero object not found");
 
 
-	auto title2 = Sprite::create("title2.jpg");
-	if (title2 == nullptr)
-	{
-		problemLoading("'title2.jpg'");
-	}
-	else
-	{
-		title2->setScale((visibleSize.width / title2->getContentSize().width) / 3 * 1.3);
-		title2->setAnchorPoint(Point(0.3, 0.5));
-		title2->setPosition(Vec2(origin.x + (visibleSize.width / 2),
-			origin.y + visibleSize.height - title2->getContentSize().height));
-		this->addChild(title2, 1);
-	}
+	int x = playerShowUpPoint["x"].asInt();
+	int y = playerShowUpPoint["y"].asInt()；
 
-	auto menu_pic = Sprite::create("timg.jpg");
-	if (menu_pic == nullptr)
-	{
-		problemLoading("'timg.jpg'");
-	}
-	else
-	{
-		menu_pic->setScale((visibleSize.width / menu_pic->getContentSize().width) / 2);
-		menu_pic->setAnchorPoint(Point(1, 0));
-		menu_pic->setPosition(Vec2(visibleSize.width + origin.x, 0));
-		this->addChild(menu_pic, 0);
-	}
+
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/role.plist", "images/role.png");
+	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("images/ui.plist", "images/ui.pvr.ccz");
+
+	//add player
+	_hero = Player::create(Player::PlayerType::HERO);
+	setViewPointCenter(_hero->getPosition());
+	_hero->setScale(0.8);
+	this->addChild(_hero);
+
+	//add enemy1
+	_enemy = Player::create(Player::PlayerType::ENEMY);
+	_enemy->setPosition(origin.x + visibleSize.width - _enemy->getContentSize().width , origin.y + visibleSize.height );
+	this->addChild(_enemy);
+
+	_hero->playAnimationForever("stay");
+	_enemy->playAnimationForever("stay");
+
+	_listener_touch = EventListenerTouchOneByOne::create();
+	_listener_touch->onTouchBegan = CC_CALLBACK_2(PlayingScene::onTouchBegan, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(_listener_touch, this);
+
+	auto attackItem = MenuItemImage::create(
+		"CloseNormal.png",
+		"CloseSelected.png",
+		CC_CALLBACK_1(PlayingScene::attackCallback, this));
+
+	attackItem->setPosition(Vec2(origin.x + visibleSize.width - attackItem->getContentSize().width / 2,
+		origin.y + attackItem->getContentSize().height / 2));
+
+	// create menu, it's an autorelease object
+	auto menu = Menu::create(attackItem, NULL);
+	menu->setPosition(Vec2::ZERO);
+	this->addChild(menu, 1);
+
+	_progress = Progress::create("player-progress-bg.png", "player-progress-fill.png");
+	_progress->setPosition(_progress->getContentSize().width / 2, this->getContentSize().height - _progress->getContentSize().height / 2);
+	this->addChild(_progress);
+	auto listener = EventListenerKeyboard::create();
+	listener->onKeyPressed = [](EventKeyboard::KeyCode keyCode, Event * event) {
+		log("KeyPress:%d", keyCode);
+		if (keyCode ==EventKeyboard::KeyCode::KEY_UP_ARROW|| keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW|| keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW|| keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
+			return true;
+		else
+			return false;
+	};
+	listener->onKeyReleased = CC_CALLBACK_2(PlayingScene::onKeyReleased,this);
+	this->_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
 	return true;
 }
 
-
-
-void PlayingScene::menuCloseCallback(Ref* pSender)
+void PlayingScene::menuCloseCallback(cocos2d::Ref* pSender)
 {
-    //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8) || (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT)
+	MessageBox("You pressed the close button. Windows Store Apps do not implement a close button.", "Alert");
+	return;
+#endif
 
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
+	Director::getInstance()->end();
 
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	exit(0);
+#endif
+}
+
+bool PlayingScene::onTouchBegan(Touch* touch, Event* event)
+{
+	Vec2 pos = this->convertToNodeSpace(touch->getLocation());
+	_hero->walkTo(pos);
+	log("MainScene::onTouchBegan");
+	_enemy->autoDoAction(_hero);
 
 
+
+	return true;
+}
+
+void PlayingScene::attackCallback(Ref* pSender)
+{
+	_hero->stopAllActions();
+	_hero->playAnimation("attack");
+	Vec2 del = _hero->getPosition() - _enemy->getPosition();
+	float distance = del.length();
+	log(String::createWithFormat("distance == %f", distance)->getCString());
+	if (distance <= 100.0) {
+		_enemy->getHit();
+	}
+	_enemy->autoAttack(_hero);
+	_progress->setProgress(_hero->getProgress()->getProgress());
+
+	return true;
 }
