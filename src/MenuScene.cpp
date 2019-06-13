@@ -59,24 +59,10 @@ bool MenuScene::init()
 		QUIT_button2,
 		CC_CALLBACK_1(MenuScene::menuCloseCallback, this));
 
-
- /*   if (QUIT_button == nullptr ||
-		QUIT_button->getContentSize().width <= 0 ||
-		QUIT_button->getContentSize().height <= 0)
-    {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-    }
-    else
-    {
-        float x = origin.x + visibleSize.width - QUIT_button->getContentSize().width/2;
-        float y = origin.y + QUIT_button->getContentSize().height/2;
-		QUIT_button->setPosition(Vec2(x,y));
-    }
-*/
 	auto menu = Menu::create(NEWGAME_button, MULTIPLAYERGAME_button, QUIT_button, NULL);
 	menu->alignItemsVertically();
 	menu->setAnchorPoint(Point(0.5, 0.5));
-	menu->setPosition(Vec2(visibleSize.width / 4 + origin.x, visibleSize.height / 2 + origin.y));
+	menu->setPosition(Vec2(visibleSize.width / 4 + origin.x, visibleSize.height / 10 * 4 + origin.y));
     this->addChild(menu, 1);
 
 
