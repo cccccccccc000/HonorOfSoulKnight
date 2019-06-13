@@ -70,9 +70,7 @@ void PlayingScene::setPlayerPosition(Point position)
 	_hero->setPosition(position);
 }
 
-bool PlayingScene::init()
-{
-// on "init" you need to initialize your instance
+
 bool PlayingScene::init()
 {
     //////////////////////////////
