@@ -8,12 +8,12 @@ Scene* PlayingScene::createScene()
     return PlayingScene::create();
 }
 
-
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
+
 
 void PlayingScene::setViewPointCenter(Point position) {
 	auto winSize = Director::getInstance()->getWinSize();
@@ -72,6 +72,11 @@ void PlayingScene::setPlayerPosition(Point position)
 
 bool PlayingScene::init()
 {
+// on "init" you need to initialize your instance
+bool PlayingScene::init()
+{
+    //////////////////////////////
+    // 1. super init first
     if ( !Scene::init() )
     {
         return false;
@@ -79,6 +84,7 @@ bool PlayingScene::init()
 
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
 
 	std::string file = "tiled_map_1v1.tmx";
 	auto str = String::createWithContentsOfFile(FileUtils::getInstance()->fullPathForFilename(file.c_str()).c_str());
@@ -193,4 +199,6 @@ void PlayingScene::attackCallback(Ref* pSender)
 	}
 	_enemy->autoAttack(_hero);
 	_progress->setProgress(_hero->getProgress()->getProgress());
+
+	return true;
 }

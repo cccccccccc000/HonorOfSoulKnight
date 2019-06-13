@@ -3,15 +3,17 @@
 #define __PLAY_SCENE_H__
 
 #include "cocos2d.h"
+
 #include "Player.h"
 USING_NS_CC;
+
 class PlayingScene : public cocos2d::Scene
 {
 public:
     static cocos2d::Scene* createScene();
 
-    virtual bool init();
-    void menuCloseCallback(cocos2d::Ref* pSender);
+   virtual bool init();
+   void menuCloseCallback(cocos2d::Ref* pSender);
 	CREATE_FUNC(PlayingScene);
 	void setViewPointCenter(cocos2d::Point position);
 	void PlayingScene::onKeyReleased(EventKeyboard::KeyCode code, Event* unused_event);
