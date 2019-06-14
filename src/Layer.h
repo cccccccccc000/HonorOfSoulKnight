@@ -13,18 +13,20 @@ public:
     static cocos2d::Layer* createLayer();
 
     virtual bool init();
-
+	void menuCloseCallback(cocos2d::Ref* pSender);
     CREATE_FUNC (MapLayer);
     
-    void menuCloseCallback(cocos2d::Ref* pSender);
 	void setViewPointCenter(cocos2d::Point position);
 	void MapLayer::onKeyReleased(EventKeyboard::KeyCode code, Event* unused_event);
 	void setPlayerPosition(cocos2d::Point position);
 	bool onTouchBegan(Touch* touch, Event* event);
+	void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* unused_event);
 	void attackCallback(Ref* pSender);
+	cocos2d::Point tileCoordForPosition(cocos2d::Point position);
 private:
 	cocos2d::TMXTiledMap* tiled_map_1v1;
 	cocos2d::TMXLayer* ground;
+	cocos2d::TMXLayer* block;
 	Player* _hero;
 	Player* _enemy;
 	EventListenerTouchOneByOne* _listener_touch;

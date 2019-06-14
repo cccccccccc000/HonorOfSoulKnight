@@ -14,6 +14,12 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
+Point MapLayer::tileCoordForPosition(Point position)
+{
+	int x = position.x / tiled_map_1v1->getTileSize().width;
+	int y = ((tiled_map_1v1->getMapSize().height * tiled_map_1v1->getTileSize().height) - position.y) / tiled_map_1v1->getTileSize().height;
+	return Point(x, y);
+}
 
 void MapLayer::setViewPointCenter(Point position) {
 	auto winSize = Director::getInstance()->getWinSize();
@@ -65,17 +71,69 @@ void MapLayer::onKeyReleased(cocos2d::EventKeyboard::KeyCode code, Event* unused
 
 }
 
+void MapLayer::onTouchEnded(Touch* touch, Event* unused_event)
+{
+	auto actionTo1 = RotateTo::create(0, 0, 180);
+	auto actionTo2 = RotateTo::create(0, 0, 0);
+	auto touchLocation = touch->getLocation();
+
+	touchLocation = this->convertToNodeSpace(touchLocation);
+
+
+	auto playerPos = saber->getPosition();
+	auto diff = touchLocation - playerPos;
+
+	if (abs(diff.x) > abs(diff.y)) {
+		if (diff.x > 0) {
+			playerPos.x += tiled_map_1v1->getTileSize().width / 2;
+			saber->runAction(actionTo2);
+		}
+		else {
+			playerPos.x -= tiled_map_1v1->getTileSize().width / 2;
+			saber->runAction(actionTo1);
+		}
+	}
+	else {
+		if (diff.y > 0) {
+			playerPos.y += tiled_map_1v1->getTileSize().height / 2;
+		}
+		else {
+			playerPos.y -= tiled_map_1v1->getTileSize().height / 2;
+		}
+	}
+
+	if (playerPos.x <= (tiled_map_1v1->getMapSize().width * tiled_map_1v1->getMapSize().width) &&
+		playerPos.y <= (tiled_map_1v1->getMapSize().height * tiled_map_1v1->getMapSize().height) &&
+		playerPos.y >= 0 &&
+		playerPos.x >= 0)
+	{
+		this->setPlayerPosition(playerPos);
+	}
+
+	this->setViewPointCenter(saber->getPosition());
+
+}
+
 
 void MapLayer::setPlayerPosition(Point position)
 {
+	Point tileCoord = this->tileCoordForPosition(position);
+	int tileGid = block->getTileGIDAt(tileCoord);
+	if (tileGid) {
+		auto properties = tiled_map_1v1->getPropertiesForGID(tileGid).asValueMap();
+		if (!properties.empty()) {
+			auto collision = properties["Blockage"].asString();
+			if ("true" == collision) {
+				return;
+			}
+		}
+	}
 	_hero->setPosition(position);
 }
 
 
 bool MapLayer::init()
 {
-    //////////////////////////////
-    // 1. super init first
     if ( !Layer::init() )
     {
         return false;
@@ -89,20 +147,16 @@ bool MapLayer::init()
 	auto str = String::createWithContentsOfFile(FileUtils::getInstance()->fullPathForFilename(file.c_str()).c_str());
 	tiled_map_1v1 = TMXTiledMap::createWithXML(str->getCString(), "");
 	ground = tiled_map_1v1->layerNamed("ground");
-
-
+	block = tiled_map_1v1->layerNamed("block");
+	block->setVisible(false);
 	addChild(tiled_map_1v1, -1);
-	auto map = TMXTiledMap::create("tiled_map_1v1.tmx");
-	addChild(map, 0);
-	auto layer1 = map->getLayer("ground");
-	auto layer2 = map->getLayer("pic1");
-	auto layer3 = map->getLayer("pic2");
+
 
 	TMXObjectGroup* objects = tiled_map_1v1->getObjectGroup("hero");
-//	CCASSERT(NULL != objects, "'hero' object group not found");
+	CCASSERT(NULL != objects, "'hero' object group not found");
 
-	auto playerShowUpPoint = objects->getObject("_hero");
-	//CCASSERT(!playerShowUpPoint.empty(), "_hero object not found");
+	auto playerShowUpPoint = objects->getObject("player");
+	CCASSERT(!playerShowUpPoint.empty(), "player object not found");
 
 
 	int x = playerShowUpPoint["x"].asInt();
