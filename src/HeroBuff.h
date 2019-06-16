@@ -10,6 +10,7 @@ struct Attribute
 {
 	Range aran;
 		//melee or ranged
+	float ran;
 	int mhp;
 		//max health point
 	int hpr;
@@ -34,7 +35,7 @@ struct Attribute
 		//critical damage(%)
 	int evd;
 		//evasion rate(%)
-	int spd;
+	float spd;
 		//movement speed
 	Attribute operator+(const Attribute& change)noexcept
 	{

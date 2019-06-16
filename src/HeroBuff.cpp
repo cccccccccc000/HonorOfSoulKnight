@@ -18,10 +18,10 @@ bool HeroBuff::BuffEnd()
 		return false;
 }
 
-HeroAttribute HeroBuff::GetAttributeChange()
+/*HeroAttribute HeroBuff::GetAttributeChange()
 {
 	return this->attribute_change_;
-}
+}*/
 
 HeroState HeroBuff::GetStateChange()
 {

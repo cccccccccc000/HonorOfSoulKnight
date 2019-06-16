@@ -3,8 +3,10 @@
 #define __MAP_LAYER_H__
 
 #include "cocos2d.h"
-
+#include "GamePause.h"
 #include "Player.h"
+#include "HeroBuff.h"
+
 USING_NS_CC;
 
 class MapLayer : public cocos2d::Layer
@@ -23,6 +25,10 @@ public:
 	void onTouchEnded(cocos2d::Touch* touch, cocos2d::Event* unused_event);
 	void attackCallback(Ref* pSender);
 	cocos2d::Point tileCoordForPosition(cocos2d::Point position);
+
+
+	void MapLayer::menuPauseCallback(Ref* pSender);
+
 private:
 	cocos2d::TMXTiledMap* tiled_map_1v1;
 	cocos2d::TMXLayer* ground;
@@ -51,11 +57,19 @@ public:
     virtual bool init();
     
 	CREATE_FUNC (EquipLayer);
-	
-	void botton_callback(Ref* sender);
+
+	void death_number_my_hero_add_one(); //invoke this functoin, the death number of my hero add 1
+	void death_number_enemy_hero_add_one(); //invoke this functoin, the death number of enemy hero add 1 
 
 private:
 	
+	int int_death_number_my_hero = 0;
+	int int_death_number_enemy_hero = 0;
+	std::string string_death_number_my_hero = "0";
+	std::string string_death_number_enemy_hero = "0";
+	cocos2d::Sprite* equip_display;
+	cocos2d::Menu* equip_display_Menu;
+	cocos2d::Menu* equip_display_label;
 
 };
 #endif // __EQUIP_LAYER_H__

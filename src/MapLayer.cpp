@@ -80,17 +80,17 @@ void MapLayer::onTouchEnded(Touch* touch, Event* unused_event)
 	touchLocation = this->convertToNodeSpace(touchLocation);
 
 
-	auto playerPos = saber->getPosition();
+	auto playerPos = _hero->getPosition();
 	auto diff = touchLocation - playerPos;
 
 	if (abs(diff.x) > abs(diff.y)) {
 		if (diff.x > 0) {
 			playerPos.x += tiled_map_1v1->getTileSize().width / 2;
-			saber->runAction(actionTo2);
+			_hero->runAction(actionTo2);
 		}
 		else {
 			playerPos.x -= tiled_map_1v1->getTileSize().width / 2;
-			saber->runAction(actionTo1);
+			_hero->runAction(actionTo1);
 		}
 	}
 	else {
@@ -110,10 +110,9 @@ void MapLayer::onTouchEnded(Touch* touch, Event* unused_event)
 		this->setPlayerPosition(playerPos);
 	}
 
-	this->setViewPointCenter(saber->getPosition());
+	this->setViewPointCenter(_hero->getPosition());
 
 }
-
 
 void MapLayer::setPlayerPosition(Point position)
 {
@@ -130,7 +129,6 @@ void MapLayer::setPlayerPosition(Point position)
 	}
 	_hero->setPosition(position);
 }
-
 
 bool MapLayer::init()
 {
@@ -253,4 +251,19 @@ void MapLayer::attackCallback(Ref* pSender)
 	_enemy->autoAttack(_hero);
 	_progress->setProgress(_hero->getProgress()->getProgress());
 
+}
+
+//
+void MapLayer::menuPauseCallback(Ref* pSender)
+{
+
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	RenderTexture *renderTexture = RenderTexture::create(visibleSize.width, visibleSize.height);
+	Scene *scene = Director::sharedDirector()->getRunningScene();
+
+	renderTexture->begin();
+	this->getParent()->visit();
+	renderTexture->end();
+
+	Director::sharedDirector()->pushScene(Gamepause::scene(renderTexture));
 }
