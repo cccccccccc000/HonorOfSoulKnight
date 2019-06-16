@@ -5,7 +5,7 @@ USING_NS_CC;
 
 Layer* EquipLayer::createLayer()
 {
-    return EquipLayer::create();
+	return EquipLayer::create();
 }
 
 void EquipLayer::death_number_my_hero_add_one() {
@@ -23,28 +23,34 @@ void EquipLayer::death_number_enemy_hero_add_one() {
 {\
 	auto equip_name = Sprite::create(string_equip_name);\
 	name_equip_number = MenuItemSprite::create(equip_name, equip_name,\
-		[this,int_money_number](Ref* sender) {\
+		[=](Ref* sender) {\
+		Scene * sence =  Director::sharedDirector()->getRunningScene();\
+		sence.hero_player_->PurchaseItem(Attribute_buff, int_money_number);\
 	});\
 	name_equip_number->setAnchorPoint(Point(0.5, 0.5));\
 	name_equip_number->setPosition(Vec2(visibleSize.width /10 * int_set_width + origin.x, visibleSize.height *0.5 + origin.y));\
-	auto equip_label = Label::createWithSystemFont(string_buff_label, "Arial", 17);\
-	equip_label->setColor(Color3B(0, 0, 0));\
+	auto equip_label = black_system_label(string_buff_label,17);\
 	name_equip_menu = MenuItemLabel::create(equip_label);\
 	name_equip_menu->setAnchorPoint(Point(0.5, 0.5));\
 	name_equip_menu->setPosition(Vec2(visibleSize.width /10 * int_set_width + origin.x, visibleSize.height *0.4 + origin.y));\
 }\
 
-//    Hero::PurchaseItem(Attribute_buff, int_money_number);\
 
+bool EquipLayer::init() {
+	if (!Layer::init())
+	{
+		return false;
+	}
 
-bool EquipLayer::init(){
-    if ( !Layer::init() )
-    {
-        return false;
-    }
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	auto black_system_label = [](std::string str, int word_size) {
+		auto label = Label::createWithSystemFont(str, "Arial", word_size);
+		label->setColor(Color3B(0, 0, 0));
+		label->setAnchorPoint(Point(0.5, 0.5));
+		return label;
+	};
 
 	//create equip display with all of equips
 	{
@@ -139,7 +145,7 @@ bool EquipLayer::init(){
 		//create label to back to maplayer with its callback function
 		auto label_back = Label::createWithSystemFont("Back To Playing", "Thonburi", 40);
 		label_back->setColor(Color3B(0, 0, 0));
-		auto menu_label_back= MenuItemLabel::create(label_back,
+		auto menu_label_back = MenuItemLabel::create(label_back,
 			[this](Ref* sender) {
 			equip_display->setVisible(false);
 			equip_display_Menu->setVisible(false);
@@ -149,13 +155,13 @@ bool EquipLayer::init(){
 		menu_label_back->setPosition(Vec2(visibleSize.width * 0.5 + origin.x, visibleSize.height *0.6 + origin.y));
 
 		//create menu of equips
-		equip_display_Menu = Menu::create(equip1,equip2,equip3,equip4,equip5,equip6,equip7,equip8,equip9, NULL);
+		equip_display_Menu = Menu::create(equip1, equip2, equip3, equip4, equip5, equip6, equip7, equip8, equip9, NULL);
 		equip_display_Menu->setPosition(Point::ZERO);
 		equip_display_Menu->setVisible(false);
 		addChild(equip_display_Menu, 2);
 
 		//create menu of equips label
-		equip_display_label = Menu::create(menu_label_back,equip1_label,equip2_label,equip3_label,equip4_label,equip5_label,equip6_label,equip7_label,equip8_label,equip9_label,NULL);
+		equip_display_label = Menu::create(menu_label_back, equip1_label, equip2_label, equip3_label, equip4_label, equip5_label, equip6_label, equip7_label, equip8_label, equip9_label, NULL);
 		equip_display_label->setPosition(Point::ZERO);
 		equip_display_label->setVisible(false);
 		addChild(equip_display_label, 2);
@@ -176,10 +182,18 @@ bool EquipLayer::init(){
 		});
 		EQUIP_button->setAnchorPoint(Point(0, 0));
 		EQUIP_button->setPosition(Vec2(visibleSize.width * 0 + origin.x, visibleSize.height *0.88 + origin.y));
-		
+
 		Menu* equip_Menu = Menu::create(EQUIP_button, NULL);
 		equip_Menu->setPosition(Point::ZERO);
 		this->addChild(equip_Menu, 1);
+	}
+
+	//create level label
+	{
+		Scene * now_scene = Director::sharedDirector()->getRunningScene();
+		auto level_label = black_system_label(std::to_string(now_scene->hero_player->GetLevel()), 40);
+		level_label->setVisible(false);
+		addChild(level_label, 2);
 	}
 
 	//create botton of board and the callback function to visible board display
@@ -189,12 +203,13 @@ bool EquipLayer::init(){
 		auto BOARD_button = MenuItemSprite::create(
 			BOARD_button1,
 			BOARD_button2,
-			[](Ref* sender) {
-			
+			[this](Ref* sender) {
+			equip_display->setVisible(true);
+			level_label->setVisible(true);
 		});
 		BOARD_button->setAnchorPoint(Point(0, 0));
 		BOARD_button->setPosition(Vec2(visibleSize.width * 0 + origin.x, visibleSize.height *0.75 + origin.y));
-		
+
 		Menu* board_Menu = Menu::create(BOARD_button, NULL);
 		board_Menu->setPosition(Point::ZERO);
 		this->addChild(board_Menu, 1);
@@ -207,7 +222,7 @@ bool EquipLayer::init(){
 		equip_label->setAnchorPoint(Point(0, 0));
 		equip_label->setPosition(Vec2(visibleSize.width *0.12 + origin.x, visibleSize.height *0.91 + origin.y));
 		this->addChild(equip_label, 2);
-		
+
 		auto board_label = Label::createWithSystemFont(string_death_number_enemy_hero, "Arial", 40);
 		board_label->enableOutline(Color4B::WHITE, 1);
 		board_label->setAnchorPoint(Point(0, 0));
@@ -226,7 +241,7 @@ bool EquipLayer::init(){
 		board_labe3->setPosition(Vec2(visibleSize.width *0.19 + origin.x, visibleSize.height *0.785 + origin.y));
 		this->addChild(board_labe3, 2);
 	}
-	
+
 	//create pause menu
 	{
 		MenuItemImage *pCloseItem = MenuItemImage::create("CloseNormal.png", "CloseSelected.png", this,
@@ -239,5 +254,17 @@ bool EquipLayer::init(){
 		this->addChild(pMenu, 1);
 	}
 
-    return true;
+	{
+		SkillButton* mSkillButton = SkillButton::createSkillButton(2.f, "stencil.png", "normal.png", "Click.png");
+		mSkillButton->setPosition(ccp(visibleSize.width - 150, 60));
+		addChild(mSkillButton, 2);
+		SkillButton* mSkillButton2 = SkillButton::createSkillButton(2.f, "stencil.png", "normal2.png", "Click2.png");
+		mSkillButton2->setPosition(ccp(visibleSize.width - 350, 60));
+		addChild(mSkillButton2, 2);
+		SkillButton* mSkillButton3 = SkillButton::createSkillButton(2.f, "stencil.png", "normal3.png", "Click3.png");
+		mSkillButton3->setPosition(ccp(visibleSize.width - 250, 60));
+		addChild(mSkillButton3, 2);
+	}
+
+	return true;
 }

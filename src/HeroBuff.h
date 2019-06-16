@@ -11,6 +11,7 @@ struct Attribute
 	Range aran;
 		//melee or ranged
 	float ran;
+		//attack range
 	int mhp;
 		//max health point
 	int hpr;
@@ -22,7 +23,7 @@ struct Attribute
 	int atk;
 		//attack
 	int def;
-		//defense
+		//defense(%)
 	int mat;
 		//magic attack
 	int mdf;
@@ -52,6 +53,7 @@ struct Attribute
 		A.mhp = this->mhp + change.mhp;
 		A.mmp = this->mmp + change.mmp;
 		A.mpr = this->mpr + change.mpr;
+		A.ran = this->ran + change.ran;
 		A.spd = this->spd + change.spd;
 		return A;
 	}
@@ -70,6 +72,7 @@ struct Attribute
 		A.mhp = this->mhp - change.mhp;
 		A.mmp = this->mmp - change.mmp;
 		A.mpr = this->mpr - change.mpr;
+		A.ran = this->ran - change.ran;
 		A.spd = this->spd - change.spd;
 		return A;
 	}
@@ -88,6 +91,7 @@ struct Attribute
 		A.mhp = change.mhp;
 		A.mmp = change.mmp;
 		A.mpr = change.mpr;
+		A.ran = change.ran;
 		A.spd = change.spd;
 		return A;
 	}
